@@ -18,7 +18,9 @@ public class Score {
     @JsonBackReference
     private GameSession session;
 
-    public Score() {}
+    public Score() {
+        // Empty constructor for JPA
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

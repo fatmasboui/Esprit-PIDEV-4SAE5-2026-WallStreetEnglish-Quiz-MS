@@ -21,7 +21,9 @@ public class QuizQuestion {
     @JsonBackReference
     private Quiz quiz;
 
-    public QuizQuestion() {}
+    public QuizQuestion() {
+        // Empty constructor for JPA
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

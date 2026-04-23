@@ -1,9 +1,7 @@
-package com.example.quiz.controller;
-
 import com.example.quiz.entity.Score;
-import com.example.quiz.repository.ScoreRepository;
 import com.example.quiz.service.ScoreService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,38 +9,42 @@ import java.util.List;
 @RestController
 @RequestMapping("/scores")
 @CrossOrigin(origins ="http://localhost:4200")
+@RequiredArgsConstructor
 public class ScoreController {
 
-    @Autowired
-    private ScoreService service;
+    private final ScoreService service;
 
     @GetMapping
-    public List<Score> getAll() {
-        return service.getAllScores();
+    public ResponseEntity<List<Score>> getAll() {
+        return ResponseEntity.ok(service.getAllScores());
     }
 
     @GetMapping("/{id}")
-    public Score getById(@PathVariable Long id) {
-        return service.getScoreById(id);
+    public ResponseEntity<Score> getById(@PathVariable Long id) {
+        Score score = service.getScoreById(id);
+        return score != null ? ResponseEntity.ok(score) : ResponseEntity.notFound().build();
     }
 
     @PostMapping
-    public Score create(@RequestBody Score score) {
-        return service.saveScore(score);
+    public ResponseEntity<Score> create(@RequestBody Score score) {
+        return ResponseEntity.ok(service.saveScore(score));
     }
 
     @PutMapping("/{id}")
-    public Score update(@PathVariable Long id, @RequestBody Score score) {
-        return service.updateScore(id, score);
+    public ResponseEntity<Score> update(@PathVariable Long id, @RequestBody Score score) {
+        Score updated = service.updateScore(id, score);
+        return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.deleteScore(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/session/{sessionId}")
-    public List<Score> getBySessionId(@PathVariable Long sessionId) {
-        return service.getScoresBySessionId(sessionId);
+    public ResponseEntity<List<Score>> getBySessionId(@PathVariable Long sessionId) {
+        return ResponseEntity.ok(service.getScoresBySessionId(sessionId));
     }
 }
+

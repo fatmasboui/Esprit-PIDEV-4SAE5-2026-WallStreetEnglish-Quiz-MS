@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class QuizControllerIntegrationTest {
+class QuizControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -30,7 +30,7 @@ public class QuizControllerIntegrationTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void testGetAllQuizzes() throws Exception {
+    void testGetAllQuizzes() throws Exception {
         Quiz quiz = new Quiz();
         quiz.setId(1L);
         quiz.setTitle("General Knowledge");
@@ -44,9 +44,10 @@ public class QuizControllerIntegrationTest {
     }
 
     @Test
-    public void testGetAllQuizzesUnauthorized() throws Exception {
+    void testGetAllQuizzesUnauthorized() throws Exception {
         mockMvc.perform(get("/quizzes")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
     }
 }
+

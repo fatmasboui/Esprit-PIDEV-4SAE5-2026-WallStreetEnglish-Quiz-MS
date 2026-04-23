@@ -23,7 +23,9 @@ public class Quiz {
     @JsonManagedReference
     private List<GameSession> sessions;
 
-    public Quiz() {}
+    public Quiz() {
+        // Empty constructor for JPA
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
