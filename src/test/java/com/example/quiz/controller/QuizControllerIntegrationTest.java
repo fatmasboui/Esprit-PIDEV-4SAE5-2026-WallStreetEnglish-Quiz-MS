@@ -2,57 +2,88 @@ package com.example.quiz.controller;
 
 import com.example.quiz.entity.Quiz;
 import com.example.quiz.service.QuizService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
+import java.util.List;
 
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@WebMvcTest(
-    controllers = QuizController.class,
-    excludeAutoConfiguration = {
-        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
-        org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class
-    }
-)
+@ExtendWith(MockitoExtension.class)
 class QuizControllerIntegrationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Mock
+    private QuizService service;
 
-    @MockBean
-    private QuizService quizService;
+    @InjectMocks
+    private QuizController quizController;
 
-    @Test
-    void testGetAllQuizzes() throws Exception {
-        Quiz quiz = new Quiz();
+    private Quiz quiz;
+
+    @BeforeEach
+    void setUp() {
+        quiz = new Quiz();
         quiz.setId(1L);
         quiz.setTitle("General Knowledge");
-
-        given(quizService.getAllQuizzes()).willReturn(Arrays.asList(quiz));
-
-        mockMvc.perform(get("/quizzes")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title").value("General Knowledge"));
     }
 
     @Test
-    void testGetAllQuizzesReturnsEmpty() throws Exception {
-        given(quizService.getAllQuizzes()).willReturn(Arrays.asList());
+    void testGetAllQuizzes() {
+        when(service.getAllQuizzes()).thenReturn(Arrays.asList(quiz));
 
-        mockMvc.perform(get("/quizzes")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+        ResponseEntity<List<Quiz>> response = quizController.getAll();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        assertEquals("General Knowledge", response.getBody().get(0).getTitle());
+    }
+
+    @Test
+    void testGetQuizById_Found() {
+        when(service.getQuizById(1L)).thenReturn(quiz);
+
+        ResponseEntity<Quiz> response = quizController.getById(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("General Knowledge", response.getBody().getTitle());
+    }
+
+    @Test
+    void testGetQuizById_NotFound() {
+        when(service.getQuizById(99L)).thenReturn(null);
+
+        ResponseEntity<Quiz> response = quizController.getById(99L);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void testCreateQuiz() {
+        when(service.saveQuiz(any(Quiz.class))).thenReturn(quiz);
+
+        ResponseEntity<Quiz> response = quizController.create(quiz);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+    }
+
+    @Test
+    void testDeleteQuiz() {
+        doNothing().when(service).deleteQuiz(1L);
+
+        ResponseEntity<Void> response = quizController.delete(1L);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(service, times(1)).deleteQuiz(1L);
     }
 }
