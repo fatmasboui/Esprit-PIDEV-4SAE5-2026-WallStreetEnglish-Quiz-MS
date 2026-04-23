@@ -29,9 +29,9 @@ jobs:
 
       - name: Build and analyze
         env:
-          SONAR_TOKEN: ${{ secrets.sonartoke }}
+          SONAR_TOKEN: ${{ secrets.sonartoken }}
         run: |
-          mvn clean verify sonar:sonar \
+          mvn -X clean verify sonar:sonar \
             -Dsonar.projectKey=fatmasboui_Esprit-PIDEV-4SAE5-2026-WallStreetEnglish-Quiz-MS \
             -Dsonar.projectName="Quiz Service" \
             -Dsonar.organization=fatmasboui \
