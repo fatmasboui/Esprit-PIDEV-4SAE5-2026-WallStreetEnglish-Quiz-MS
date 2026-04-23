@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,7 +18,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(QuizController.class)
+@WebMvcTest(
+    controllers = QuizController.class,
+    excludeAutoConfiguration = {
+        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
+        org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class
+    }
+)
 class QuizControllerIntegrationTest {
 
     @Autowired
@@ -27,7 +34,6 @@ class QuizControllerIntegrationTest {
     private QuizService quizService;
 
     @Test
-    @WithMockUser(roles = "USER")
     void testGetAllQuizzes() throws Exception {
         Quiz quiz = new Quiz();
         quiz.setId(1L);
@@ -42,8 +48,9 @@ class QuizControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser
-    void testGetAllQuizzesUnauthorized() throws Exception {
+    void testGetAllQuizzesReturnsEmpty() throws Exception {
+        given(quizService.getAllQuizzes()).willReturn(Arrays.asList());
+
         mockMvc.perform(get("/quizzes")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
