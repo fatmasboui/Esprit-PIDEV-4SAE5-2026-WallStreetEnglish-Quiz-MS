@@ -1,9 +1,8 @@
-package com.example.quiz.controller;
-
 import com.example.quiz.entity.GameSession;
 import com.example.quiz.entity.GameStatus;
 import com.example.quiz.service.GameSessionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,43 +10,49 @@ import java.util.List;
 @RestController
 @RequestMapping("/game-sessions")
 @CrossOrigin(origins ="http://localhost:4200")
+@RequiredArgsConstructor
 public class GameSessionController {
 
-    @Autowired
-    private GameSessionService service;
+    private final GameSessionService service;
 
     @GetMapping
-    public List<GameSession> getAll() {
-        return service.getAllSessions();
+    public ResponseEntity<List<GameSession>> getAll() {
+        return ResponseEntity.ok(service.getAllSessions());
     }
 
     @GetMapping("/{id}")
-    public GameSession getById(@PathVariable Long id) {
-        return service.getSessionById(id);
+    public ResponseEntity<GameSession> getById(@PathVariable Long id) {
+        GameSession session = service.getSessionById(id);
+        return session != null ? ResponseEntity.ok(session) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/pin/{pin}")
-    public GameSession getByPin(@PathVariable String pin) {
-        return service.getSessionByPin(pin);
+    public ResponseEntity<GameSession> getByPin(@PathVariable String pin) {
+        GameSession session = service.getSessionByPin(pin);
+        return session != null ? ResponseEntity.ok(session) : ResponseEntity.notFound().build();
     }
 
     @PostMapping
-    public GameSession create(@RequestBody GameSession session) {
-        return service.createSession(session);
+    public ResponseEntity<GameSession> create(@RequestBody GameSession session) {
+        return ResponseEntity.ok(service.createSession(session));
     }
 
     @PatchMapping("/{id}/status")
-    public GameSession updateStatus(@PathVariable Long id, @RequestParam GameStatus status) {
-        return service.updateStatus(id, status);
+    public ResponseEntity<GameSession> updateStatus(@PathVariable Long id, @RequestParam GameStatus status) {
+        GameSession updated = service.updateStatus(id, status);
+        return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")
-    public GameSession update(@PathVariable Long id, @RequestBody GameSession session) {
-        return service.updateSession(id, session);
+    public ResponseEntity<GameSession> update(@PathVariable Long id, @RequestBody GameSession session) {
+        GameSession updated = service.updateSession(id, session);
+        return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.deleteSession(id);
+        return ResponseEntity.noContent().build();
     }
 }
+

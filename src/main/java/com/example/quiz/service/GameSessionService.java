@@ -1,3 +1,5 @@
+package com.example.quiz.service;
+
 import com.example.quiz.entity.GameSession;
 import com.example.quiz.entity.GameStatus;
 import com.example.quiz.repository.GameSessionRepository;

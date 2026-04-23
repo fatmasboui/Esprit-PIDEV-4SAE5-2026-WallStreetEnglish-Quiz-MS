@@ -1,3 +1,5 @@
+package com.example.quiz.controller;
+
 import com.example.quiz.entity.Quiz;
 import com.example.quiz.service.QuizService;
 import lombok.RequiredArgsConstructor;

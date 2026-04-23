@@ -1,3 +1,5 @@
+package com.example.quiz.service;
+
 import com.example.quiz.entity.Score;
 import com.example.quiz.repository.ScoreRepository;
 import lombok.RequiredArgsConstructor;

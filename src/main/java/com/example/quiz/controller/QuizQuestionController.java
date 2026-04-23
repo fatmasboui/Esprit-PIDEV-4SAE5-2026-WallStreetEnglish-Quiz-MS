@@ -1,8 +1,7 @@
-package com.example.quiz.controller;
-
 import com.example.quiz.entity.QuizQuestion;
 import com.example.quiz.service.QuizQuestionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,33 +9,37 @@ import java.util.List;
 @RestController
 @RequestMapping("/quiz-questions")
 @CrossOrigin(origins ="http://localhost:4200")
+@RequiredArgsConstructor
 public class QuizQuestionController {
 
-    @Autowired
-    private QuizQuestionService service;
+    private final QuizQuestionService service;
 
     @GetMapping
-    public List<QuizQuestion> getAll() {
-        return service.getAllQuestions();
+    public ResponseEntity<List<QuizQuestion>> getAll() {
+        return ResponseEntity.ok(service.getAllQuestions());
     }
 
     @GetMapping("/{id}")
-    public QuizQuestion getById(@PathVariable Long id) {
-        return service.getQuestionById(id);
+    public ResponseEntity<QuizQuestion> getById(@PathVariable Long id) {
+        QuizQuestion question = service.getQuestionById(id);
+        return question != null ? ResponseEntity.ok(question) : ResponseEntity.notFound().build();
     }
 
     @PostMapping
-    public QuizQuestion create(@RequestBody QuizQuestion question) {
-        return service.saveQuestion(question);
+    public ResponseEntity<QuizQuestion> create(@RequestBody QuizQuestion question) {
+        return ResponseEntity.ok(service.saveQuestion(question));
     }
 
     @PutMapping("/{id}")
-    public QuizQuestion update(@PathVariable Long id, @RequestBody QuizQuestion question) {
-        return service.updateQuestion(id, question);
+    public ResponseEntity<QuizQuestion> update(@PathVariable Long id, @RequestBody QuizQuestion question) {
+        QuizQuestion updated = service.updateQuestion(id, question);
+        return updated != null ? ResponseEntity.ok(updated) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.deleteQuestion(id);
+        return ResponseEntity.noContent().build();
     }
 }
+
