@@ -1,3 +1,5 @@
+package com.example.quiz.controller;
+
 import com.example.quiz.entity.Score;
 import com.example.quiz.service.ScoreService;
 import lombok.RequiredArgsConstructor;
@@ -47,4 +49,3 @@ public class ScoreController {
         return ResponseEntity.ok(service.getScoresBySessionId(sessionId));
     }
 }
-

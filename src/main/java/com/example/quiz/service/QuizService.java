@@ -1,5 +1,7 @@
 package com.example.quiz.service;
 
+import com.example.quiz.entity.Quiz;
+import com.example.quiz.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,4 +48,3 @@ public class QuizService {
         repository.deleteById(id);
     }
 }
-
