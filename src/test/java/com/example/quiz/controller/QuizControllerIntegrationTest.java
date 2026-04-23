@@ -20,8 +20,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(properties = {
     "eureka.client.enabled=false",
-    "spring.cloud.discovery.enabled=false"
+    "spring.cloud.discovery.enabled=false",
+    "spring.cloud.config.enabled=false"
 })
+@ActiveProfiles("test")
 @AutoConfigureMockMvc
 class QuizControllerIntegrationTest {
 
