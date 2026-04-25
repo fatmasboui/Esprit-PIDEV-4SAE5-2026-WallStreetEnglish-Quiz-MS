@@ -1,8 +1,8 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.8.4-openjdk-17'
-        }
+    agent any
+
+    tools {
+        maven 'maven3'
     }
 
     environment {
@@ -31,7 +31,7 @@ pipeline {
 
     post {
         success {
-            echo 'Quiz Service built and analyzed successfully!'
+            echo 'Service built and analyzed successfully!'
         }
         failure {
             echo 'Build failed.'
