@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'maven:3.8.4-openjdk-17'
+        }
+    }
 
     environment {
         SONAR_TOKEN = credentials('sonar-cloud-token')
@@ -23,18 +27,6 @@ pipeline {
                 sh 'mvn sonar:sonar -Dsonar.token=${SONAR_TOKEN}'
             }
         }
-
-        stage('Docker Build') {
-            steps {
-                sh 'docker build -t quiz-service .'
-            }
-        }
-
-        stage('Cleanup') {
-            steps {
-                sh 'docker image prune -f'
-            }
-        }
     }
 
     post {
@@ -42,7 +34,7 @@ pipeline {
             echo 'Quiz Service built and analyzed successfully!'
         }
         failure {
-            echo 'Build failed. Check logs.'
+            echo 'Build failed.'
         }
     }
 }
