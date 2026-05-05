@@ -1,3 +1,4 @@
+package com.example.quiz.controller;
 import com.example.quiz.entity.QuizQuestion;
 import com.example.quiz.service.QuizQuestionService;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +9,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/quiz-questions")
-@CrossOrigin(origins ="http://localhost:4200")
 @RequiredArgsConstructor
 public class QuizQuestionController {
 

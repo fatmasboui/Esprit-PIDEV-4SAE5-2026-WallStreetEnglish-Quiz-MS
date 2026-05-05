@@ -2,6 +2,9 @@ package com.example.quiz.entity;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 
 @Entity
 public class QuizQuestion {
@@ -21,9 +24,11 @@ public class QuizQuestion {
     @JsonBackReference
     private Quiz quiz;
 
-    public QuizQuestion() {
-        // Empty constructor for JPA
-    }
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<QuizAnswer> answers;
+
+    public QuizQuestion() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -34,9 +39,26 @@ public class QuizQuestion {
     public int getTimeLimit() { return timeLimit; }
     public void setTimeLimit(int timeLimit) { this.timeLimit = timeLimit; }
 
+    public Quiz getQuiz() { return quiz; }
+    public void setQuiz(Quiz quiz) { this.quiz = quiz; }
+
+    /**
+     * Allows Angular to send { "quizId": 1 } and have JPA set quiz_id correctly.
+     * @JsonBackReference prevents the quiz field from being deserialized directly,
+     * so we expose a flat setter instead.
+     */
+    @JsonProperty("quizId")
+    public void setQuizId(Long quizId) {
+        if (quizId != null) {
+            Quiz q = new Quiz();
+            q.setId(quizId);
+            this.quiz = q;
+        }
+    }
+
     public String getOptions() { return options; }
     public void setOptions(String options) { this.options = options; }
 
-    public Quiz getQuiz() { return quiz; }
-    public void setQuiz(Quiz quiz) { this.quiz = quiz; }
+    public List<QuizAnswer> getAnswers() { return answers; }
+    public void setAnswers(List<QuizAnswer> answers) { this.answers = answers; }
 }

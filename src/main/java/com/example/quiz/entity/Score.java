@@ -12,6 +12,8 @@ public class Score {
 
     private int points;
     private Long userId;
+    private String username;
+    private int questionIndex;
 
     @ManyToOne
     @JoinColumn(name = "session_id")
@@ -30,6 +32,12 @@ public class Score {
 
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }
+
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+
+    public int getQuestionIndex() { return questionIndex; }
+    public void setQuestionIndex(int questionIndex) { this.questionIndex = questionIndex; }
 
     public GameSession getSession() { return session; }
     public void setSession(GameSession session) { this.session = session; }

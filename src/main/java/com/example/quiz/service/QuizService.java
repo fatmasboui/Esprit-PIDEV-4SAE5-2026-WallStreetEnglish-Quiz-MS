@@ -27,6 +27,15 @@ public class QuizService {
 
     public Quiz saveQuiz(Quiz quiz) {
         log.info("Saving new quiz: {}", quiz.getTitle());
+        // Set back-references for questions and their answers to ensure proper JPA cascading
+        if (quiz.getQuestions() != null) {
+            quiz.getQuestions().forEach(q -> {
+                q.setQuiz(quiz);
+                if (q.getAnswers() != null) {
+                    q.getAnswers().forEach(a -> a.setQuestion(q));
+                }
+            });
+        }
         return repository.save(quiz);
     }
 
